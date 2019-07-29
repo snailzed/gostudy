@@ -46,4 +46,31 @@ func main() {
 	var b []string = []string{"12", "34", "56"}
 	res6 := strings.Join(b, "")
 	fmt.Println(res6) //123456
+
+	//字符串原理： []byte与string互转
+	var c string = "qwerqwer"
+	bc := []byte(c) //转成[]byte字节数组
+	c = string(bc)  //转成字符串
+
+	fmt.Println(c, bc) //qwerqwer [113 119 101 114 113 119 101 114]
+	for i, data := range c {
+		fmt.Printf("i = %d, data = %c\n", i, data)
+	}
+
+	//字符串长度等于字节切片长度
+	var a11 string = "qwer1234"
+	b11 := []byte(a11)
+	fmt.Println("len(a) == len(b)", len(a11) == len(b11))
+
+	//修改字符串
+	var a12 string = "qwer1234"
+	b12 := []byte(a12)
+	b12[0] = 'h'
+	a12 = string(b12)
+	fmt.Println(a12) //hwer1234
+
+	//使用rune字符类型求字符长度
+	var d string = "中国"
+	d1 := []rune(d)
+	fmt.Println(len(d), len(d1)) // 6 2
 }
