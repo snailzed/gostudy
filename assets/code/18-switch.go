@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 func main() {
+	test()
 	main1()
 	var num int
 	fmt.Printf("请按下楼层：")
@@ -26,6 +27,14 @@ func main() {
 		//fallthrough
 	default:
 		fmt.Println("按下的是xxx楼")
+	}
+}
+func test() {
+	switch a := 8; a {
+	case 1, 2, 3, 4:
+		fmt.Println(" 1 <= a <=4 ")
+	case 5, 6, 7, 8:
+		fmt.Println(" 5 <= a <=8 ")
 	}
 }
 func main1() {
