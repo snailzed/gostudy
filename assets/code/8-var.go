@@ -32,4 +32,12 @@ func main() {
 	fmt.Printf("k = %v\n", k)
 	fmt.Printf("a1 = %v\n", a1)
 	fmt.Printf("b1 = %v\n", b1)
+
+	//多重赋值
+	A, B, C := 1, 2, 3
+	fmt.Println(A, B, C)
+
+	//匿名变量,使用 _ 表示
+	A, _ = B, A //将B的值赋值给A，A的值赋值给匿名变量，在函数多个返回值时经常用到
+	fmt.Println(A, B)
 }
