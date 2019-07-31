@@ -17,6 +17,8 @@ func main() {
 	fmt.Println("after s = ", s)
 
 	testSliceCap()
+	testSliceLen()
+	testCopyAndAppend()
 }
 
 func testSliceWriteStyle() {
@@ -62,4 +64,22 @@ func testSliceCap() {
 	len(s)=9,cap(s)=16
 	len(s)=10,cap(s)=16
 	*/
+}
+
+func testSliceLen() {
+	var s = []int{1, 2}
+	s = s[0:1]
+	fmt.Println(len(s))
+}
+
+func testCopyAndAppend() {
+	sl_from := []int{1, 2, 3}
+	sl_to := make([]int, 10)
+	n := copy(sl_to, sl_from)
+	fmt.Println(sl_to)
+	fmt.Printf("Copied %d elements\n", n) // n == 3
+
+	sl3 := []int{1, 2, 3}
+	sl3 = append(sl3, 4, 5, 6)
+	fmt.Println(sl3)
 }
