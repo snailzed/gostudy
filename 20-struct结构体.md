@@ -266,6 +266,47 @@ func main() {
 	s := Student{Person{"mike", 'm', 18}, 666, "bj"}
 	s.PrintInfo()
 }
+```
+
+## 7、方法值和方法表达式
+> 函数和方法在内存表示为一个地址。 
+方法值：将方法赋值给一个值，可以隐藏接收者。
+
+## 8、类型的 String() 方法和格式化描述符
+> 如果类型定义了`string()`方法，在`fmt.Printf`的`%v`和`fmt.Println`、`fmt.Print`调用时会当成默认输出 
+```go
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+type TwoInts struct {
+	a int
+	b int
+}
+
+func main() {
+	two1 := new(TwoInts)
+	two1.a = 12
+	two1.b = 10
+	fmt.Printf("two1 is: %v\n", two1)
+	fmt.Println("two1 is:", two1)
+	fmt.Printf("two1 is: %T\n", two1)
+	fmt.Printf("two1 is: %#v\n", two1)
+}
+
+func (tn *TwoInts) String() string {
+	return "(" + strconv.Itoa(tn.a) + "/" + strconv.Itoa(tn.b) + ")"
+}
+
+/**
+two1 is: (12/10)
+two1 is: (12/10)
+two1 is: *main.TwoInts
+two1 is: &main.TwoInts{a:12, b:10}
+ */
 ```                
 ## 结构体注意事项
 - a、结构体在内存中是连续块形式存在，性能很强
