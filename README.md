@@ -19,5 +19,5 @@
 - 18、[字符串、数组和切片的应用](./18-%20字符串、数组和切片的应用.md)
 - 19、[map字典](./19-map字典.md)
 - 20、[struct结构体](./20-struct结构体.md)
-- 20、[接口inteface](./21-接口inteface.md)
+- 21、[接口inteface](./21-接口inteface.md)
 
