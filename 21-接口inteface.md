@@ -64,7 +64,8 @@ func typeAssertion() {
 }
 
 ```          
-> `type-switch`类型判断 `接口变量.(type)`为获得的类型
+> `type-switch`类型判断 `接口变量.(type)`为获得的类型 `case T类型`；
+因为空接口的存在，所以所有变量都可以使用类型断言或者类型判断
 ```go
 
 //类型判断
@@ -78,11 +79,39 @@ case nil:
 default:
 	fmt.Printf("Unexpected type %T\n", t)
 }
+
+func classifier(items ...interface{}) {
+	for i, x := range items {
+		switch x.(type) {
+		case bool:
+			fmt.Printf("Param #%d is a bool\n", i)
+		case float64:
+			fmt.Printf("Param #%d is a float64\n", i)
+		case int, int64:
+			fmt.Printf("Param #%d is a int\n", i)
+		case nil:
+			fmt.Printf("Param #%d is a nil\n", i)
+		case string:
+			fmt.Printf("Param #%d is a string\n", i)
+		default:
+			fmt.Printf("Param #%d is unknown\n", i)
+		}
+	}
+}
 ```   
-        
-     
 
+## 4、空接口        
+> `interface{}`，空接口没有任何方法，可以看做所有类型都实现了该接口，对于接口类型的变量，只要实现了该接口，那么就可以将类型实例赋值给该接口变量，所以空接口是万能类型     
+ 
+      var t interface{} //定义一个万能类型
 
+## 5、接口类型方法集
+
+ 
+       类型 *T 的可调用方法集包含接受者为 *T 或 T 的所有方法集
+       类型 T 的可调用方法集包含接受者为 T 的所有方法
+       类型 T 的可调用方法集不包含接受者为 *T 的方法
+       
 ## 注意事项
 - a、go中默认会有空接口`interface {}`,里面没有任何方法，换言之所有类型都实现了空接口，即空接口可以表示任何类型的变量
 - b、`接口都是隐式实现的`，多个类型可以实现同一个接口

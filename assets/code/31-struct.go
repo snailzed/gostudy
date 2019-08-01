@@ -33,6 +33,7 @@ func main() {
 	Area(r)
 
 	fmt.Println(FileInstance(1, "test"))
+	testFuncSet()
 }
 
 //普通结构体变量作为参数是值传递，指针变量为引用传递
@@ -53,4 +54,17 @@ type file struct {
 
 func FileInstance(fd int, name string) *file {
 	return &file{fd: fd, name: name}
+}
+
+func testFuncSet() {
+	s := student{name: "snail", age: 24}
+	s.testPointer()
+	s.testNormal()
+}
+func (s *student) testPointer() {
+	fmt.Println(s)
+}
+
+func (s student) testNormal() {
+	fmt.Println(s)
 }
