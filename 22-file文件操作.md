@@ -175,7 +175,7 @@ func testBufioread() {
 
  ## 3、写文件
 > 写文件都需要先获取文件句柄，即`*os.File`
-- a、使用`*os.File`的`WriteString`方法写入字符串. <br>
+- a、使用`*os.File`的方法如`WriteString`写入文件内容. <br>
 > 可以使用`openFile(name string, flag int, perm FileMode)`打开文件，
 `name`为文件名,`flag`为打开模式（`os.O_RDONLY:只读,os.O_WRONLY:只写,os.O_CREATE:文件不存在则创建,os.O_TRUNC：文件已存在，则将文件长度截为0`,多个参数使用`|`连接），
 写文件时，`perm`必须为`0666`；
@@ -194,10 +194,72 @@ func testBufioread() {
            os.SYNC  :  打开文件用于同步I/O
            os.O_APPEND : 追加模式
            
+           
+           
+- b、使用`bufio`带缓冲写入文件内容（如`bufio.NewWriter(fd).WriteString(string)`）
+> `bufio`包都需要先获取文件句柄`*os.File`，再转换成`bufio`包的`writer`写入缓冲区;写入之后需要调用`flush`写入文件
+               
+          fd,err := openFile("file path",os.O_WRONLY|os.O_CREATE,0666)
+          writer := bufio.NewWriter(fd)
+          writer.WriteString("1")      
+          writer.Flush()      
+
+- c、使用`ioutil`包一次性写入
+> `ioutil.WriteFile()`
+     
+        ioutil.WriteFile(文件名,字节数组,0666)
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+//使用*os.File的方法直接写入
+func main() {
+	fd, err := os.OpenFile("b.txt", os.O_CREATE|os.O_WRONLY, 0666)
+	defer fd.Close()
+	if err != nil {
+		return
+	}
+	for i := 0; i < 10; i++ {
+		_, _ = fd.WriteString(fmt.Sprintf("%d = %d\n", i, i))
+	}
+	testBufioWriter()
+}
+
+//bufio带缓冲写入，性能比直接写入强
+func testBufioWriter() {
+	fd, err := os.OpenFile("b1.txt", os.O_CREATE|os.O_WRONLY, 0666)
+	defer fd.Close()
+	if err != nil {
+		return
+	}
+	writer := bufio.NewWriter(fd)
+	for i := 0; i < 10; i++ {
+		_, _ = writer.WriteString(fmt.Sprintf("%d = %d\n", i, i))
+	}
+	writer.Flush() //必须调用该函数，否则不会写入文件
+}
+```
+## 注意事项
+- a、`os.Open`是只读模式`os.O_RDONLY`，`os.Create`创建文件，是`os.O_RDWR`读写模式(如果文件已存在会截断它,即空文件)；`os.openFile`可以选择打开文件模式
 - b、
 
 
-## 注意事项
-- a、`os.Open`是只读模式`os.O_RDONLY`，`os.Create`创建文件，是`os.O_RDWR`读写模式(如果文件已存在会截断它,即空文件)；`os.openFile`可以选择打开文件模式
+
+
+
+
+
+
+
+
+
+
+
 
                                       
