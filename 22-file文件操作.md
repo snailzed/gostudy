@@ -1,7 +1,9 @@
 # 22、文件操作
 
 ## 1、获取用户终端输入
-使用`fmt`包的`Scan`、`Scanf`和`Scanln`以及`Sscan`函数。标准输入：`os.Stdin`
+使用`fmt`包的`Scan`、`Scanf`和`Scanln`以及`Sscan`函数。
+标准输入：`os.Stdin` 
+标准输出：`os.Stdout` 都是`*os.File`
 
         //从终端读取
         fmt.Scanf(format string, a ...interface{}) (n int, err error)：格式化输入，format决定如何读取数据，格式化格式与格式化输出一致，遇到换行符结束
@@ -94,3 +96,108 @@ func testBufioread() {
 	fmt.Println(input)
 }
 ```        
+
+## 2、文件读取
+>标准输入输出`os.Stdin`和`os.Stdout`都是`*os.File`类型，表示打开一个文件句柄
+
+- a、打开文件 `os.Open(file string)`，返回`*os.File`
+> 打开文件，要记得关闭 `defer fd.Close()`
+
+
+- b、读取文件内容
+> 读取文件可以使用`bufio`、`ioutil`或者`fmt.FScan`开头的函数;读取到文件末尾是，会返回`io.EOF`的`err`
+
+        
+          //1、使用bufio逐行读取（要先获取文件句柄 *os.File）
+          fd,err := os.Open("文件路径")
+          reader := bufio.NewReader(fd)
+          for {
+             line,readErr := reader.ReadString('\n')
+          }
+          
+          //2、使用bufio一次性读取（要先获取文件句柄）：读取二进制文件很有用
+           fd,err := os.Open("文件路径")
+           buf := make([]byte,1024)
+           reader := bufio.NewReader(fd)
+           input,readErr := reader.Read(buf)//一次性读取 
+          
+          //3、使用fmt.Fscan开头函数（要先获取文件句柄 *os.File）: 适合读取格式固定的文件
+          fd,err := os.Open("文件路径")
+          for {
+             var s string
+             fmt.Fscanln(fd, &s)  //以空格分割的行
+             fmt.Fscan(&s) //以空格或换行符分割
+             fmt.Fscanf
+          }
+           
+          //4、使用ioutil包一次性读取成字符串
+          content,err := ioutil.readFile("文件路径")
+ 
+ - c、可以使用`compress`包读取压缩文件
+```go
+ package main
+ 
+ import (
+ 	"fmt"
+ 	"bufio"
+ 	"os"
+ 	"compress/gzip"
+ )
+ 
+ func main() {
+ 	fName := "MyFile.gz"
+ 	var r *bufio.Reader
+ 	fi, err := os.Open(fName)
+ 	if err != nil {
+ 		fmt.Fprintf(os.Stderr, "%v, Can't open %s: error: %s\n", os.Args[0], fName,
+ 			err)
+ 		os.Exit(1)
+ 	}
+ 	defer fi.Close()
+ 	fz, err := gzip.NewReader(fi)
+ 	if err != nil {
+ 		r = bufio.NewReader(fi)
+ 	} else {
+ 		r = bufio.NewReader(fz)
+ 	}
+ 
+ 	for {
+ 		line, err := r.ReadString('\n')
+ 		if err != nil {
+ 			fmt.Println("Done reading file")
+ 			os.Exit(0)
+ 		}
+ 		fmt.Println(line)
+ 	}
+ } 
+``` 
+
+
+ ## 3、写文件
+> 写文件都需要先获取文件句柄，即`*os.File`
+- a、使用`*os.File`的`WriteString`方法写入字符串. <br>
+> 可以使用`openFile(name string, flag int, perm FileMode)`打开文件，
+`name`为文件名,`flag`为打开模式（`os.O_RDONLY:只读,os.O_WRONLY:只写,os.O_CREATE:文件不存在则创建,os.O_TRUNC：文件已存在，则将文件长度截为0`,多个参数使用`|`连接），
+写文件时，`perm`必须为`0666`；
+        
+           fd,err := os.openFile("b.txt",os.O_WRONLY|os.CREATE,0666)//openFile打开文件
+           fd,err := os.Create("文件名") //读写模式创建新文件，如果文件存在则会被置为空文件 os.Open()方法不行，因为是只读模式   
+           defer fd.Close()        
+           fd.WriteString("text")   
+           
+           //flag参数详解
+           os.O_RDWR  : 读写模式打开
+           os.O_RDONLY: 只读模式  
+           os.O_WRONLY: 只写模式  
+           os.O_CREATE: 文件不存在则创建  
+           os.O_TRUNC:  文件存在则将文件长度截断为0 
+           os.SYNC  :  打开文件用于同步I/O
+           os.O_APPEND : 追加模式
+           
+- b、
+
+
+## 注意事项
+- a、`os.Open`是只读模式`os.O_RDONLY`，`os.Create`创建文件，是`os.O_RDWR`读写模式(如果文件已存在会截断它,即空文件)；`os.openFile`可以选择打开文件模式
+
+                                      
