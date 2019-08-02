@@ -14,7 +14,8 @@ func main() {
 	//readFileByioutil()
 	//readFileBybufioBuffer()
 	//readFileByFmt()
-	readCsv("./a.txt")
+	//readCsv("./a.txt")
+	readByosFile()
 }
 
 //使用bufio循环读取文件
@@ -35,6 +36,27 @@ func readFileBybufio() {
 		if readerError == io.EOF {
 			return
 		}
+	}
+}
+
+//*os.File.Read
+func readByosFile() {
+	fd, err := os.Open("./a.txt")
+	if err != nil {
+		return
+	}
+	buf := make([]byte, 1024)
+	for {
+		n, readErr := fd.Read(buf)
+		if readErr == io.EOF {
+			break
+		} else if n < 0 {
+			fmt.Println("read error")
+			os.Exit(1)
+		} else if n == 0 {
+			break
+		}
+		fmt.Println(string(buf))
 	}
 }
 
