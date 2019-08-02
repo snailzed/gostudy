@@ -32,6 +32,10 @@ func testBufioWriter() {
 	writer.Flush()
 }
 
+func TestIoutilWriteFile() error {
+	return ioutil.WriteFile("b1.txt", []byte("123123131"), 0666)
+}
+
 //例子 请给这个结构编写一个 save 方法，将 Title 作为文件名、Body作为文件内容，写入到文本文件中。
 //
 //再编写一个 load 函数，接收的参数是字符串 title，该函数读取出与 title 对应的文本文件。请使用 *Page 做为参数，请使用 ioutil 包里的函。
