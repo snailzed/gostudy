@@ -35,4 +35,13 @@
 - 6.2、[读取命令行输入](6.2-读取命令行输入.md)
 - 6.3、[通信数据格式(json|xml|gob)](6.3-通信数据格式(json|xml|gob).md)
 
+## 7、GO错误处理
+- 7.1、[go错误处理](7.1-go错误处理.md)
+- 7.2、[test测试框架](7.2-go-test测试框架.md)
+
+## 8、Go并发编程
+-  8.1、[goroutine协程](8.1-goroutine.md)
+-  8.2、[管道channel](8.2-管道channel.md)
+
+
 
