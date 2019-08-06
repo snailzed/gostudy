@@ -41,7 +41,7 @@
 
 ## 8、Go并发编程
 -  8.1、[goroutine协程](8.1-goroutine.md)
--  8.2、[管道channel](8.2-管道channel.md)
+-  8.2、[管道channel](8.2-通道channel.md)
 
 
 
