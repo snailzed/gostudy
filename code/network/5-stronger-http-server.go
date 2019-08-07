@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
-	"text/template"
 )
 
 func main() {
@@ -44,4 +44,9 @@ func templateHanlder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("temp error")
 	}
+}
+
+func templateHanlderV2(w http.ResponseWriter, r *http.Request) {
+	t := template.New("test")
+	t.Parse("")
 }
