@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -32,8 +33,27 @@ func startHttpServer() {
 
 //处理函数
 func handle(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "HELLo")
-	_, err := w.Write([]byte(r.URL.String()))
+
+	//r.Method
+	res := `
+     r.Method = %s,
+     r.URL = %v,
+     r.Proto = %v,
+     r.ProtoMajor = %v,
+     r.ProtoMinor = %v,
+`
+	fmt.Fprintf(w, res, r.Method, r.URL, r.Proto, r.ProtoMajor, r.ProtoMinor)
+
+	//读取body里面的数据
+	body, err := ioutil.ReadAll(r.Body)
+	body1, err := ioutil.ReadAll(r.Body)
+
+	fmt.Println(body, body1)
+	if err != nil {
+		fmt.Println("read body error:", err)
+	}
+	_, err = io.WriteString(w, string(body))
+	_, err = w.Write([]byte(r.URL.String()))
 	if err != nil {
 		fmt.Println(err)
 	}
