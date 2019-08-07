@@ -33,6 +33,7 @@ func startHttpServer() {
 
 //处理函数
 func handle(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("VM", "100")
 
 	//r.Method
 	res := `
