@@ -1,4 +1,0 @@
-[2019-08-22 23:26:49] [ERROR] Error log
-[2019-08-22 23:30:58] [ERROR] [[/Users/snailzed/go/src/gostudy/demo/log/utils.go:gostudy/demo/log.getFileLineNum:19]] Error log
-[2019-08-22 23:31:47] [ERROR] [/Users/snailzed/go/src/gostudy/demo/log/utils.go:gostudy/demo/log.getFileLineNum:19] Error log
-[2019-08-22 23:32:25] [ERROR] [/Users/snailzed/go/src/gostudy/demo/log/utils.go:gostudy/demo/log.WriteLog:15] Error log

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"gostudy/demo/log"
 	"gostudy/demo/logger"
 )
 
@@ -14,21 +14,13 @@ func main1() {
 	log.Fatal("it is fatal log")
 }
 
-func sum(s []int, c chan int) {
-	sum := 0
-	for _, v := range s {
-		sum += v
-	}
-	c <- sum // 把 sum 发送到通道 c
-}
-
 func main() {
-	s := []int{7, 2, 8, -9, 4, 0}
-
-	c := make(chan int)
-	go sum(s[:len(s)/2], c)
-	go sum(s[len(s)/2:], c)
-	x, y := <-c, <-c // 从通道 c 中接收
-
-	fmt.Println(x, y, x+y)
+	var err error
+	l, err := log.NewFileLog(log.LOG_DEBUG, "/Users/apple/go/src/gostudy/demo/runtime/info.log", "/Users/apple/go/src/gostudy/demo/runtime/error.log", log.SPLIT_BY_SIZE, 1024*1024)
+	if err != nil {
+		panic(err)
+	}
+	for {
+		l.Debug("debug log")
+	}
 }

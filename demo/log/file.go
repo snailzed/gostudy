@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -13,9 +14,18 @@ type FileLog struct {
 	InfoFile  *os.File
 	ErrorFile *os.File
 
-	LogChan   chan string
+	LogChan   chan *LogData
 	SplitType int
 	SplitSize int64
+}
+
+//log data
+type LogData struct {
+	file   *os.File
+	level  int
+	format string
+	msg    []interface{}
+	error  bool
 }
 
 func NewFileLog(level int, infoPath, errorPath string, SplitType int, SplitSize int64) (Log, error) {
@@ -31,6 +41,9 @@ func NewFileLog(level int, infoPath, errorPath string, SplitType int, SplitSize 
 		return nil, err
 	}
 	f.ErrorFile = fd
+	f.LogChan = make(chan *LogData, 50000)
+	//异步写入日志
+	go WriteLog(f)
 	return f, nil
 }
 
@@ -38,25 +51,71 @@ func (f *FileLog) Debug(format string, args ...interface{}) {
 	if f.Level > LOG_DEBUG {
 		return
 	}
-	WriteLog(f.InfoFile, LOG_DEBUG, format, args...)
+	logData := &LogData{
+		file:   f.InfoFile,
+		level:  LOG_DEBUG,
+		format: format,
+		msg:    args,
+		error:  false,
+	}
+	//select通道选择器：当通道阻塞时，会走default语句，不会出现阻塞现象，这时会丢弃日志
+	select {
+	case f.LogChan <- logData:
+		fmt.Println("IN")
+	default:
+		fmt.Println("DEFAULT")
+	}
 }
 func (f *FileLog) Info(format string, args ...interface{}) {
 	if f.Level > LOG_INFO {
 		return
 	}
-	WriteLog(f.InfoFile, LOG_INFO, format, args...)
+	logData := &LogData{
+		file:   f.InfoFile,
+		level:  LOG_INFO,
+		format: format,
+		msg:    args,
+		error:  false,
+	}
+	//select通道选择器：当通道阻塞时，会走default语句，不会出现阻塞现象，这时会丢弃日志
+	select {
+	case f.LogChan <- logData:
+	default:
+	}
 }
 func (f *FileLog) Warn(format string, args ...interface{}) {
 	if f.Level > LOG_WARN {
 		return
 	}
-	WriteLog(f.InfoFile, LOG_WARN, format, args...)
+	logData := &LogData{
+		file:   f.InfoFile,
+		level:  LOG_WARN,
+		format: format,
+		msg:    args,
+		error:  false,
+	}
+	//select通道选择器：当通道阻塞时，会走default语句，不会出现阻塞现象，这时会丢弃日志
+	select {
+	case f.LogChan <- logData:
+	default:
+	}
 }
 func (f *FileLog) Error(format string, args ...interface{}) {
 	if f.Level > LOG_ERROR {
 		return
 	}
-	WriteLog(f.ErrorFile, LOG_ERROR, format, args...)
+	logData := &LogData{
+		file:   f.ErrorFile,
+		level:  LOG_ERROR,
+		format: format,
+		msg:    args,
+		error:  true,
+	}
+	//select通道选择器：当通道阻塞时，会走default语句，不会出现阻塞现象，这时会丢弃日志
+	select {
+	case f.LogChan <- logData:
+	default:
+	}
 }
 
 func (f *FileLog) Close() {
