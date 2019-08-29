@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 )
@@ -33,4 +34,5 @@ func TestMarshal(t *testing.T) {
 	if err != nil {
 		t.Errorf("unmarshal failed , error:%v", err)
 	}
+	fmt.Printf("%v\n", config)
 }
