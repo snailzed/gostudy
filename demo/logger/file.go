@@ -22,19 +22,16 @@ func NewFileLogger(level int, InfoFilePath, WarnFilePath, ErrorFilePath string) 
 	fd, err := os.OpenFile(InfoFilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("open file error. path=" + InfoFilePath)
-		return nil
 	}
 	f.InfoFile = fd
 	fd, err = os.OpenFile(WarnFilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("open file error. path=" + WarnFilePath)
-		return nil
 	}
 	f.WarnFile = fd
 	fd, err = os.OpenFile(ErrorFilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("open file error. path=" + ErrorFilePath)
-		return nil
 	}
 	f.ErrorFile = fd
 	return f
