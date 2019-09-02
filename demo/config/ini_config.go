@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -47,13 +48,18 @@ func UnMarshal(data []byte, result interface{}) (err error) {
 		if len(line) == 0 {
 			continue
 		}
+		//注释
+		if line[0] == ';' || line[0] == '#' {
+			continue
+		}
 		sectionRet := sectionPattern.FindAllString(line, -1)
-		//fmt.Println(sectionRet)
 		//匹配到了section
 		if len(sectionRet) > 0 {
-			section := sectionRet[0]
-			section = section[1 : len(section)-1]
-			fmt.Println(section)
+			section := strings.TrimSpace(sectionRet[0])
+			section = strings.TrimSpace(section[1 : len(section)-1])
+			if len(section) <= 0 {
+				err = errors.New(fmt.Sprintf("synax error,section error: %s: %d", line, lineNo+1))
+			}
 			currentField, err = parseSection(section, value, lineNo)
 			continue
 		}
@@ -76,15 +82,44 @@ func parseItem(line, currentField string, result interface{}, lineNo int) (err e
 
 	fmt.Printf("%s=%s\n", key, value)
 
+	//获取当前的section
 	ret := reflect.ValueOf(result)
 	section := ret.Elem().FieldByName(currentField)
-	fmt.Println(section)
 	if section.Kind() != reflect.Struct {
 		err = fmt.Errorf("syanx error: %s must be struct", currentField)
 		return
 	}
+	//遍历section下的字段，判断字段是否存在
 	for i := 0; i < section.NumField(); i++ {
-		fmt.Println(section.Elem().Field(i))
+		field := section.Type().Field(i)
+		itemTag := field.Tag.Get("ini")
+		//fmt.Println("item:", itemTag)
+		if itemTag == key {
+			fmt.Printf("%s.%s=%s\n", currentField, key, value)
+			switch section.Field(i).Kind() {
+			case reflect.String:
+				section.Field(i).SetString(value)
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				valueInt, err := strconv.ParseInt(value, 10, 64)
+				if err != nil {
+					return err
+				}
+				section.Field(i).SetInt(valueInt)
+			case reflect.Uint:
+				valueInt, err := strconv.ParseUint(value, 10, 64)
+				if err != nil {
+					return err
+				}
+				section.Field(i).SetUint(valueInt)
+			case reflect.Bool:
+				valueBool, err := strconv.ParseBool(value)
+				if err != nil {
+					return err
+				}
+				section.Field(i).SetBool(valueBool)
+			}
+
+		}
 	}
 	return
 }

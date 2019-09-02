@@ -18,6 +18,7 @@ type MysqlConfig struct {
 	Database string `ini:"database"`
 	Port     int    `ini:"port"`
 	Charset  string `ini:"charset"`
+	Debug    bool   `ini:"debug"`
 }
 type Config struct {
 	ServerConf ServerConfig `ini:"server"`
@@ -34,5 +35,5 @@ func TestMarshal(t *testing.T) {
 	if err != nil {
 		t.Errorf("unmarshal failed , error:%v", err)
 	}
-	fmt.Printf("%v\n", config)
+	fmt.Printf("%+v\n", config)
 }
