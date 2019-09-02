@@ -69,6 +69,10 @@ func UnMarshal(data []byte, result interface{}) (err error) {
 		}
 		//解析Item
 		err = parseItem(itemRet[0], currentField, result, lineNo)
+		if err != nil {
+			return err
+		}
+
 	}
 	return
 }
