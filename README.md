@@ -34,7 +34,7 @@
 ## 6、IO操作、文件操作
 - 6.1、[file文件操作|IO操作](6.1-file文件操作.md)
 - 6.2、[读取命令行输入](6.2-读取命令行输入.md)
-- 6.3、[通信数据格式(json|xml|gob)](6.3-通信数据格式(json|xml|gob).md)
+- 6.3、[通信数据格式(json|xml|gob)](6.3-通信数据格式(json%7Cxml%7Cgob%7Cmsgpack%7Cprotobuf).md)
 
 ## 7、GO错误处理
 - 7.1、[go错误处理](7.1-go错误处理.md)
