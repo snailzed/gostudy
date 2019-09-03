@@ -1,0 +1,35 @@
+//指定版本
+syntax = "proto3";
+
+//包名，protoc生成go文件的包名
+package address;
+
+//手机类型
+//枚举类型，第一个字段值必须为0
+enum PhoneType {
+  HOME = 0;
+  WOKR = 1;
+}
+
+//手机结构体，使用message关键字定义
+message Phone {
+  PhoneType type = 1; //表示对应到结构体的第一个字段,后面的数字表示标识号
+  string number = 2;  //表示对应到结构体的第二个字段，以此类推
+}
+
+
+//人结构体
+message Person {
+   int32 id = 1;
+   string name = 2;
+
+   //repeated表示可重复，对应go中的切片
+    repeated Phone phones = 3;
+}
+
+//联系人列表
+message ContactBook {
+   repeated Person persons = 1;
+}
+
+
