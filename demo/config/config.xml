@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config version="1.0.0">
+    <server>
+        <name>Go_server121</name>
+        <ip>127.0.0.1</ip>
+        <port>8080</port>
+    </server>
+    <mysql>
+        <host>127.0.0.1</host>
+        <port>3306</port>
+        <username>root</username>
+        <password>rootroot</password>
+        <database>test</database>
+    </mysql>
+</config>
