@@ -59,6 +59,7 @@ func RetConsumer(retChan chan *Result) {
 func Run() {
 	jobChan := make(chan *Job, 1000)
 	retChan := make(chan *Result, 1000)
+	//启动多个worker，其实是消费者个数
 	StartWroker(jobChan, retChan, 10)
 	go RetConsumer(retChan)
 	var i int
