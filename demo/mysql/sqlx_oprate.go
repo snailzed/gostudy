@@ -70,6 +70,31 @@ func PrepareQuery(id int) {
 	}
 }
 
+//预处理
+func PrepareQueryV2() {
+	stmt, err := Db.Preparex("select id,name,age from user where id > ?")
+	if err != nil {
+		fmt.Println("Preparex failed:", err)
+	}
+	defer stmt.Close()
+	var users []User
+	err = stmt.Select(&users, 0)
+	if err != nil {
+		fmt.Println("stmt select failed.", err)
+	}
+	fmt.Printf("users:%#v\n", users)
+}
+func PrepareExec() {
+	stmt, err := Db.Preparex("update user set name=?, age=? where id=?")
+	if err != nil {
+		fmt.Println("Preparex failed:", err)
+	}
+	defer stmt.Close()
+	ret, err := stmt.Exec("Snailzed", 25, 1)
+
+	fmt.Println(ret.RowsAffected())
+}
+
 //事务
 func Transaction() {
 
@@ -162,4 +187,6 @@ func Run() {
 	Update()
 	PrepareQuery(1)
 	Transaction()
+	PrepareQueryV2()
+	PrepareExec()
 }
