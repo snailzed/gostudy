@@ -5,9 +5,17 @@ import (
 	"sync"
 )
 
+//保存所有用户的session
 type MemoryManager struct {
 	data   map[string]Session //session_id => MemorySession
 	rwlock sync.RWMutex
+}
+
+//返回内存session管理实例
+func NewMemoryManager() SessionManager {
+	return &MemoryManager{
+		data: make(map[string]Session, 1024),
+	}
 }
 
 //获取session

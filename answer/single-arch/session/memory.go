@@ -13,8 +13,13 @@ type MemorySession struct {
 func NewMemorySession(id string) Session {
 	return &MemorySession{
 		id:   id,
-		data: make(map[string]interface{}, 1024),
+		data: make(map[string]interface{}, 10),
 	}
+}
+
+//获取sessionId
+func (m *MemorySession) Id() string {
+	return m.id
 }
 
 //设置session
