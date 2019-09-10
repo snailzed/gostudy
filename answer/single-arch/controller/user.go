@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"gostudy/answer/single-arch/middleware/account"
 	"gostudy/answer/single-arch/model"
 	"gostudy/answer/single-arch/util"
 	"log"
@@ -48,6 +49,7 @@ func (u *UserController) Register(ctx *gin.Context) {
 
 //登录
 func (u *UserController) Login(ctx *gin.Context) {
+	account.ProcessRequest(ctx)
 	var userInfo model.UserInfo
 	err := ctx.BindJSON(&userInfo)
 	if err != nil {
@@ -73,5 +75,7 @@ func (u *UserController) Login(ctx *gin.Context) {
 		util.ResponseError(ctx, util.ErrUserOrPassword)
 		return
 	}
+	//cookie必须在返回数据之前设置
+	account.ProcessResponse(ctx)
 	util.ResponseSuccess(ctx, nil)
 }

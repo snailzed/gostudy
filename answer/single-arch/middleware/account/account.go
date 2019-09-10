@@ -36,7 +36,7 @@ func ProcessRequest(c *gin.Context) {
 	//延迟设置
 	defer func() {
 		if userSession == nil {
-			userSession, err = session.CreateSession()
+			userSession, _ = session.CreateSession()
 		}
 		c.Set(UserSessionName, userSession)
 	}()
@@ -48,8 +48,8 @@ func ProcessRequest(c *gin.Context) {
 		return
 	}
 	//设置到请求上下文
-	intUserId, err := userId.(int64)
-	if err != nil {
+	intUserId, ok := userId.(int64)
+	if !ok {
 		c.Set(UserId, int64(0))
 		c.Set(UserLoginStatus, false)
 		return
@@ -67,7 +67,11 @@ func GetUserId(ctx *gin.Context) (userId int64, err error) {
 		err = errors.New("The user id does not exists.")
 		return
 	}
-	userId, err = tempUserId.(int64)
+	userId, ok := tempUserId.(int64)
+	if !ok {
+		err = errors.New("Convert user id to int64 failed.")
+		return
+	}
 	return
 }
 
