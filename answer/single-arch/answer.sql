@@ -2,7 +2,7 @@ CREATE DATABASE mercury character set utf8mb4;
 use mercury;
 
 CREATE TABLE user (
-  id int primary key auto_increment not null ,
+  id bigint(20) primary key auto_increment not null ,
   username varchar(64) not null DEFAULT '' comment 'username',
   nickname varchar(64) NOT NULL DEFAULT '' COMMENT 'nickname',
   email varchar(64) NOT NULL DEFAULT '' COMMENT '邮箱',

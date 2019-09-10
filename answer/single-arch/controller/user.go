@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gostudy/answer/single-arch/model"
 	"gostudy/answer/single-arch/util"
+	"log"
 )
 
 type UserController struct {
@@ -37,14 +38,40 @@ func (u *UserController) Register(ctx *gin.Context) {
 	}
 	err = userInfo.Add()
 	if err != nil {
+		log.Println(err)
 		util.ResponseError(ctx, util.ErrServer)
 		return
 	}
-	util.ResponseSuccess(ctx, userInfo)
+	util.ResponseSuccess(ctx, nil)
 	return
 }
 
 //登录
 func (u *UserController) Login(ctx *gin.Context) {
-
+	var userInfo model.UserInfo
+	err := ctx.BindJSON(&userInfo)
+	if err != nil {
+		util.ResponseError(ctx, util.ErrEmptyParam)
+		return
+	}
+	if len(userInfo.Email) == 0 || len(userInfo.Password) == 0 {
+		util.ResponseError(ctx, util.ErrEmptyParam)
+		return
+	}
+	dbUser, err := userInfo.GetUserByEmail()
+	//记录为空
+	if err == sql.ErrNoRows {
+		util.ResponseError(ctx, util.ErrUserNotExists)
+		return
+	}
+	if err != nil {
+		util.ResponseError(ctx, util.ErrServer)
+		return
+	}
+	//判断密码是否正确
+	if dbUser.Password != util.Md5([]byte(userInfo.Password+dbUser.Salt)) {
+		util.ResponseError(ctx, util.ErrUserOrPassword)
+		return
+	}
+	util.ResponseSuccess(ctx, nil)
 }

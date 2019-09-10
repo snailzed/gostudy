@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"gostudy/answer/single-arch/controller"
+	"gostudy/answer/single-arch/id_gen"
 	"gostudy/answer/single-arch/model"
 )
 
@@ -11,8 +12,16 @@ var engine *gin.Engine
 func main() {
 	engine = gin.Default()
 	HandleStatic()
-	//用户注册
-	engine.POST("/user/register", (&controller.UserController{}).Register)
+
+	//用户模块
+	user := engine.Group("/user")
+	{
+		//用户注册
+		user.POST("/register", (&controller.UserController{}).Register)
+		//用户登录
+		user.POST("/login", (&controller.UserController{}).Login)
+	}
+
 	err := engine.Run(":9090")
 	if err != nil {
 		panic(err)
@@ -30,4 +39,5 @@ func HandleStatic() {
 
 func init() {
 	model.Init()
+	id_gen.Init(0)
 }

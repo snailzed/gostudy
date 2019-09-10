@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gostudy/answer/single-arch/id_gen"
 	"gostudy/answer/single-arch/util"
 	"time"
 )
@@ -27,7 +28,7 @@ func (u *UserInfo) GetUserByEmail() (user UserInfo, err error) {
 }
 
 func (u *UserInfo) Add() (err error) {
-	sql := "INSERT INTO user (username,email,salt,password,create_time) values(?,?,?,?,?)"
+	sql := "INSERT INTO user (id,username,email,salt,password,create_time) values(?,?,?,?,?,?)"
 	stmt, err := Db.Preparex(sql)
 	if err != nil {
 		return err
@@ -35,7 +36,11 @@ func (u *UserInfo) Add() (err error) {
 	defer stmt.Close()
 	salt := util.RandString(16)
 	password := util.Md5([]byte(u.Password + salt))
-	_, err = stmt.Exec(u.Username, u.Email, salt, password, time.Now().Unix())
+	id, err := id_gen.GetId()
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(id, u.Username, u.Email, salt, password, time.Now().Unix())
 	if err != nil {
 		return err
 	}
