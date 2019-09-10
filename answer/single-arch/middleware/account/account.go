@@ -100,4 +100,13 @@ func ProcessResponse(ctx *gin.Context) {
 	}
 	//userSession 设置cookie
 	ctx.SetCookie(CookieSessionId, userSession.Id(), CookieMaxAge, "/", "", false, true)
+	//cookie := &http.Cookie{
+	//	Name:     CookieSessionId,
+	//	Value:    userSession.Id(),
+	//	Expires:  time.Now().Add(1 * 3600 * time.Second),
+	//	Path:     "/",
+	//	Secure:   false,
+	//	HttpOnly: true,
+	//}
+	//http.SetCookie(ctx.Writer, cookie)
 }
