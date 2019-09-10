@@ -14,13 +14,15 @@ func main() {
 	engine = gin.Default()
 	HandleStatic()
 	//用户模块
-	user := engine.Group("/user")
+	user := engine.Group("/api/user")
 	{
 		//用户注册
 		user.POST("/register", (&controller.UserController{}).Register)
 		//用户登录
 		user.POST("/login", (&controller.UserController{}).Login)
 	}
+	engine.GET("/api/category/list", (&controller.CategoryController{}).GetCategoryList)
+	engine.POST("/api/ask/submit", (&controller.QuestionController{}).AddQuestion)
 
 	err := engine.Run(":9090")
 	if err != nil {
