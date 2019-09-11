@@ -48,6 +48,11 @@ func (q *QuestionController) AddQuestion(ctx *gin.Context) {
 		util.ResponseError(ctx, util.ErrNeedUserLogin)
 		return
 	}
+	err = question.AddQuestion()
+	if err != nil {
+		util.ResponseError(ctx, util.ErrServer)
+		return
+	}
 	util.ResponseSuccess(ctx, question)
 	return
 }

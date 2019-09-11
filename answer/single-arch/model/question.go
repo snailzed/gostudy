@@ -30,8 +30,17 @@ type ApiQuestionDetail struct {
 	CategoryName string `json:"category_name"`
 }
 
-func (q *Question) Add() (err error) {
-	//sqlStr := "INSERT INTO question(id,caption,content,author_id,category_id,status,create_time) values(?,)"
+func (q *Question) AddQuestion() (err error) {
+	sqlStr := "INSERT INTO question(id,caption,content,author_id,category_id,status,create_time) values(?,?,?,?,?,?,?)"
+	stmt, err := Db.Preparex(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
 	//
-	return
+	_, err = stmt.Exec(q.QuestionId, q.Caption, q.Content, q.AuthorId, q.CategoryId, q.Status, time.Now().Unix())
+	if err != nil {
+		return err
+	}
+	return nil
 }
