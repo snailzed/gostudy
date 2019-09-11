@@ -12,6 +12,14 @@ func Init() {
 }
 
 func ProcessRequest(c *gin.Context) {
+	var userSession session.Session
+	//延迟设置
+	defer func() {
+		if userSession == nil {
+			userSession, _ = session.CreateSession()
+		}
+		c.Set(UserSessionName, userSession)
+	}()
 	//获取cookie
 	cookie, err := c.Request.Cookie(CookieSessionId)
 	if err != nil {
@@ -27,19 +35,12 @@ func ProcessRequest(c *gin.Context) {
 		c.Set(UserLoginStatus, false)
 		return
 	}
-	userSession, err := session.Get(cookie.Value)
+	userSession, err = session.Get(cookie.Value)
 	if err != nil {
 		c.Set(UserId, int64(0))
 		c.Set(UserLoginStatus, false)
 		return
 	}
-	//延迟设置
-	defer func() {
-		if userSession == nil {
-			userSession, _ = session.CreateSession()
-		}
-		c.Set(UserSessionName, userSession)
-	}()
 	//获取用户id
 	userId, err := userSession.Get(UserId)
 	if err != nil {
@@ -81,11 +82,11 @@ func IsLogin(ctx *gin.Context) bool {
 	if !exists {
 		return false
 	}
-	_, ok := tempLogin.(bool)
+	ret, ok := tempLogin.(bool)
 	if !ok {
 		return false
 	}
-	return true
+	return ret
 }
 
 //处理响应，设置cookie
@@ -99,7 +100,8 @@ func ProcessResponse(ctx *gin.Context) {
 		return
 	}
 	//userSession 设置cookie
-	ctx.SetCookie(CookieSessionId, userSession.Id(), CookieMaxAge, "/", "", false, true)
+	ctx.SetCookie(CookieSessionId, userSession.Id(), CookieMaxAge, "/", "localhost", false, true)
+
 	//cookie := &http.Cookie{
 	//	Name:     CookieSessionId,
 	//	Value:    userSession.Id(),

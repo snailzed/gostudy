@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"gostudy/answer/single-arch/controller"
+	"gostudy/answer/single-arch/filter"
 	"gostudy/answer/single-arch/id_gen"
 	"gostudy/answer/single-arch/middleware/account"
 	"gostudy/answer/single-arch/model"
@@ -22,7 +23,8 @@ func main() {
 		user.POST("/login", (&controller.UserController{}).Login)
 	}
 	engine.GET("/api/category/list", (&controller.CategoryController{}).GetCategoryList)
-	engine.POST("/api/ask/submit", (&controller.QuestionController{}).AddQuestion)
+	//中间件使用
+	engine.POST("/api/ask/submit", account.AuthMiddleware, (&controller.QuestionController{}).AddQuestion)
 
 	err := engine.Run(":9090")
 	if err != nil {
@@ -43,4 +45,8 @@ func init() {
 	model.Init()
 	id_gen.Init(0)
 	account.Init()
+	err := filter.Init("./filter/words.txt")
+	if err != nil {
+		panic(err)
+	}
 }

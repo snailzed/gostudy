@@ -46,7 +46,7 @@ func (t *Trie) Add(key string) {
 }
 
 //查找需要过滤的字符串，并进行替换:从根节点开始查找
-func (t *Trie) FilterWords(words, replace string) (result string) {
+func (t *Trie) FilterWords(words, replace string) (result string, hit bool) {
 	wordsRunes := []rune(words)
 	node := t.root
 	if node == nil {
@@ -67,11 +67,13 @@ func (t *Trie) FilterWords(words, replace string) (result string) {
 		//存在的话
 		node = ret
 		if node.isEnd {
+			hit = true
 			node = t.root
 			resultRune = append(resultRune, ([]rune(replace))...)
 			start = index + 1
 			continue
 		}
 	}
-	return string(resultRune)
+	result = string(resultRune)
+	return
 }

@@ -77,5 +77,5 @@ func (u *UserController) Login(ctx *gin.Context) {
 	}
 	//cookie必须在返回数据之前设置
 	account.ProcessResponse(ctx)
-	util.ResponseSuccess(ctx, nil)
+	util.ResponseSuccess(ctx, 1)
 }
