@@ -26,6 +26,10 @@ func main() {
 	//中间件使用
 	engine.POST("/api/ask/submit", account.AuthMiddleware, (&controller.QuestionController{}).AddQuestion)
 
+	//评论
+	engine.GET("/api/comment/root_comments", (&controller.CommentController{}).RootComments)
+	engine.GET("/api/comment/child_comments", (&controller.CommentController{}).ChildComments)
+
 	err := engine.Run(":9090")
 	if err != nil {
 		panic(err)

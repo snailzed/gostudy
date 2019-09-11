@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"gostudy/answer/single-arch/id_gen"
 	"gostudy/answer/single-arch/util"
 	"time"
@@ -10,10 +11,10 @@ type UserInfo struct {
 	Id       int64  `json:"user_id" db:"id"`
 	Nickname string `json:"nickname" db:"nickname"`
 	Sex      int    `json:"sex" db:"sex"`
-	Salt     string `json:"_" db:"salt"`
-	Username string `json:"user" db:"username"`
+	Salt     string `json:"-" db:"salt"`
+	Username string `json:"username" db:"username"`
 	Email    string `json:"email" db:"email"`
-	Password string `json:"password" db:"password"`
+	Password string `json:"-" db:"password"`
 }
 
 func (u *UserInfo) GetUserByEmail() (user UserInfo, err error) {
@@ -45,4 +46,20 @@ func (u *UserInfo) Add() (err error) {
 		return err
 	}
 	return nil
+}
+
+//获取用户
+func GetUserInfoById(id int64) (user *UserInfo, err error) {
+	sqlStr := "SELECT id,nickname,sex,username,email FROM user where id = ?"
+	stmt, err := Db.Preparex(sqlStr)
+	if err != nil {
+		return user, err
+	}
+	defer stmt.Close()
+	user = new(UserInfo)
+	err = stmt.Get(user, id)
+	if err != nil && err == sql.ErrNoRows {
+		return user, nil
+	}
+	return
 }
