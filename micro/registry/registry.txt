@@ -1,0 +1,11 @@
+服务注册开发：
+
+
+    服务注册，可以注册到etcd、consul或zookeeper，可以定义一个服务注册接口，然后不同的注册中心去
+    实现该接口
+
+    再使用插件管理PluginManager，来决定使用哪个插件即可,
+
+        map[插件名字]Registry  ===> [
+                                      etcd --> EtcdRegistry   ==> 实现服务注册接口
+                                   ]
